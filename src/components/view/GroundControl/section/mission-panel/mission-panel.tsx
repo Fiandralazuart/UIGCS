@@ -5,11 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 const waypoints = [
-  ["01", "TAKEOFF", "5.0s", "2.0 m/s", "3.5m", "B1", "CLOSE", "FALSE"],
-  ["02", "WAYPOINT", "8.0s", "3.5 m/s", "4.2m", "B1", "OPEN", "FALSE"],
-  ["03", "WAYPOINT", "4.0s", "4.0 m/s", "4.5m", "B2", "CLOSE", "FALSE"],
-  ["04", "WAYPOINT", "6.0s", "3.0 m/s", "3.8m", "B2", "OPEN", "FALSE"],
-  ["05", "WAYPOINT", "10.0s", "1.5 m/s", "0.5m", "B3", "CLOSE", "TRUE"],
+  ["01", "TAKEOFF", "5.0s", "3.5m", "B1", "CLOSE", "FALSE"],
+  ["02", "WAYPOINT", "8.0s", "4.2m", "B1", "OPEN", "FALSE"],
+  ["03", "WAYPOINT", "4.0s", "4.5m", "B2", "CLOSE", "FALSE"],
+  ["04", "WAYPOINT", "6.0s", "3.8m", "B2", "OPEN", "FALSE"],
+  ["05", "WAYPOINT", "10.0s", "0.5m", "B3", "CLOSE", "TRUE"],
 ];
 
 export function MissionPanel() {
@@ -69,14 +69,13 @@ export function MissionPanel() {
           </div>
         </div>
         <div className="overflow-x-auto rounded-lg border border-slate-100">
-          <table className="w-full min-w-[760px] text-left">
+          <table className="w-full min-w-[680px] text-left">
             <thead className="bg-slate-50">
               <tr className="border-b border-slate-100">
                 {[
                   "WP#",
                   "TYPE",
                   "HOLD (s)",
-                  "SPEED",
                   "ALT (m)",
                   "BATCH",
                   "GRIPPER",

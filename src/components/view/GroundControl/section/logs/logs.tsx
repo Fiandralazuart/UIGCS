@@ -112,7 +112,8 @@ const logs: Record<LogKey, LogEntry[]> = {
     {
       time: "--:--:--",
       level: "WARN",
-      message: "Button START pressed → mission start blocked: vehicle disconnected.",
+      message:
+        "Button START pressed → mission start blocked: vehicle disconnected.",
     },
     {
       time: "--:--:--",
