@@ -58,7 +58,8 @@
     "linux": {
       "target": ["AppImage"],
       "category": "Utility",
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "executableName": "soerasky-ground-control"
     }
   }
 }

@@ -3,6 +3,31 @@
 // Next.js yang sama (produksi, hasil `next build`) di dalam window native.
 const { app, BrowserWindow } = require("electron");
 
+// 2026-09-19 (atas permintaan user): taskbar/dock menampilkan nama "uigcs"
+// (dari package.json "name") + icon gear generik, BUKAN "SOERASKY Ground
+// Control" + logo -- karena WM_CLASS Electron default diturunkan dari nama
+// internal app, bukan productName/.desktop file. app.setName() HARUS
+// dipanggil SEBELUM app.whenReady() supaya WM_CLASS/taskbar ikut benar.
+app.setName("SOERASKY Ground Control");
+
+// 2026-09-19 (atas permintaan user: "pastikan cuman bisa membuka satu
+// aplikasi aja"): single-instance lock -- kalau user coba buka AppImage
+///launcher kedua kalinya selagi instance PERTAMA masih jalan, instance
+// KEDUA langsung exit (gagal dapat lock) alih-alih ikut jalan sebagai
+// proses baru (yang tadinya bisa bikin 2 window + 2 server Next.js rebutan
+// port 3000). Instance pertama yang menang lock, dan begitu ada percobaan
+// buka kedua terdeteksi (event "second-instance"), window PERTAMA yang
+// sudah ada di-fokuskan (bukan diam), supaya user tetap dapat feedback
+// jelas "aplikasinya udah kebuka, ini dia".
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  // app.quit() async -- return di sini (sah di top-level CommonJS, module
+  // Node dibungkus function) mencegah sisa file (spawn server kedua, buat
+  // window kedua, dst) tetap sempat jalan sebelum quit benar-benar selesai.
+  app.quit();
+  return;
+}
+
 // 2026-09-17: ditemukan window muncul blank lalu langsung crash/quit di
 // display X11 virtual/remote (VNC-like) -- GPU acceleration Electron
 // default sering tidak kompatibel dengan compositor semacam ini.
@@ -76,6 +101,15 @@ function createWindow() {
 app.whenReady().then(() => {
   startNextServer();
   waitForServer(`http://localhost:${PORT}`, createWindow);
+});
+
+// Percobaan buka instance KEDUA (lock gagal di proses itu, tapi ini event
+// di instance PERTAMA yang menang lock) -- fokuskan window yang SUDAH ada,
+// jangan biarkan diam tanpa respons.
+app.on("second-instance", () => {
+  if (!mainWindow) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.focus();
 });
 
 app.on("window-all-closed", () => {
